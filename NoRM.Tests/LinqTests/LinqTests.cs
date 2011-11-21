@@ -541,6 +541,22 @@ namespace Norm.Tests
         }
 
         [Fact]
+        public void QueryShouldReturnEmptyWhenFilteringOnNullableDatetimeWithNoMatch()
+        {
+            using (var session = new Session())
+            {
+                session.Add(new Post3() { Title = "Title1", PublishDate = DateTime.Now.Date });
+                session.Add(new Post3() { Title = "Title2", PublishDate = DateTime.Now.Date.AddDays(1) });
+                session.Add(new Post3() { Title = "Title3", PublishDate = DateTime.Now.Date.AddDays(2) });
+                var queryable = session.Posts3; 
+                var result = queryable.Where(x => x.PublishDate.HasValue 
+                    && x.PublishDate.Value < DateTime.Now.AddDays(-1)).ToList();
+                Assert.Equal(0, result.Count);
+                Assert.Equal(false, queryable.QueryStructure().IsComplex);
+            }
+        }
+
+        [Fact]
         public void LinqQueriesShouldSupportNativeContainsQueryUsingDollarIn()
         {
             using (var session = new Session())
@@ -1655,6 +1671,20 @@ namespace Norm.Tests
                 Assert.Equal(44, products[1].Price);
                 Assert.Equal(2, products.Length);
                 Assert.Equal(true, queryable.QueryStructure().IsComplex);
+            }
+        }
+
+        [Fact]
+        public void NoProductsShouldBeReturnedWhenNoOneEquals()
+        {
+            using (var session = new Session())
+            {
+                session.Add(new TestProduct { Name = "Test1", Price = 10 });
+                session.Add(new TestProduct { Name = "Test2", Price = 22 });
+                session.Add(new TestProduct { Name = "Test3", Price = 33 });
+                var queryable = session.Products; var result = queryable.Where(x => x.Price == 100);
+                Assert.Equal(0, result.Count());
+                Assert.Equal(false, queryable.QueryStructure().IsComplex);
             }
         }
 

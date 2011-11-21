@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using Xunit;
@@ -36,7 +37,9 @@ namespace NoRM.Tests
         [Fact]
         public void ParserCanParseMemberAndNumber()
         {
-            var result = _parser.ParseJSON("{\"Pi\": -3.1415  , \"Pie\" : 314e-2 }");
+            // Setting culture to be able to run in environment other than en-US
+            System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+            var result = _parser.ParseJSON("{\"Pi\": \"-3.1415\"  , \"Pie\" : 314e-2 }");
             Assert.Equal(-3.1415d, result["Pi"]);
             Assert.Equal(3.14d, result["Pie"]);
         }

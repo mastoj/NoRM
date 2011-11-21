@@ -125,6 +125,10 @@ namespace Norm.Tests
         {
             get { return _provider.GetCollection<Post>().AsQueryable(); }
         }
+        public IQueryable<Post3> Posts3
+        {
+            get { return _provider.GetCollection<Post3>().AsQueryable(); }
+        }
 
         #region IDisposable Members
 
@@ -189,8 +193,7 @@ namespace Norm.Tests
         public IList<Comment> Comments { get; set; }
         public IList<string> Tags { get; set; }
     }
-
-
+    
     internal class Post2
     {
         public Post2()
@@ -206,6 +209,18 @@ namespace Norm.Tests
         public IList<string> Tags { get; set; }
     }
 
+    internal class Post3
+    {
+        public Post3()
+        {
+            Id = ObjectId.NewObjectId();
+            PublishDate = DateTime.Now;
+            Title = "Title";
+        }
+        public string Title { get; set; }
+        public DateTime? PublishDate { get; set; }
+        public ObjectId Id { get; set; }
+    }
 
     internal class Comment
     {
