@@ -548,10 +548,26 @@ namespace Norm.Tests
                 session.Add(new Post3() { Title = "Title1", PublishDate = DateTime.Now.Date });
                 session.Add(new Post3() { Title = "Title2", PublishDate = DateTime.Now.Date.AddDays(1) });
                 session.Add(new Post3() { Title = "Title3", PublishDate = DateTime.Now.Date.AddDays(2) });
-                var queryable = session.Posts3; 
-                var result = queryable.Where(x => x.PublishDate.HasValue 
+                var queryable = session.Posts3;
+                var result = queryable.Where(x => x.PublishDate.HasValue
                     && x.PublishDate.Value < DateTime.Now.AddDays(-1)).ToList();
                 Assert.Equal(0, result.Count);
+                Assert.Equal(false, queryable.QueryStructure().IsComplex);
+            }
+        }
+
+        [Fact]
+        public void QueryShouldReturnOnePostWhenFilteringOnNullableDatetimeWithOneMatch()
+        {
+            using (var session = new Session())
+            {
+                session.Add(new Post3() { Title = "Title1", PublishDate = DateTime.Now.Date });
+                session.Add(new Post3() { Title = "Title2", PublishDate = DateTime.Now.Date.AddDays(1) });
+                session.Add(new Post3() { Title = "Title3", PublishDate = DateTime.Now.Date.AddDays(2) });
+                var queryable = session.Posts3;
+                var result = queryable.Where(x => x.PublishDate.HasValue
+                    && x.PublishDate.Value >= DateTime.Now.AddDays(2)).ToList();
+                Assert.Equal(1, result.Count);
                 Assert.Equal(false, queryable.QueryStructure().IsComplex);
             }
         }
